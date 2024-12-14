@@ -1,0 +1,107 @@
+/* General Styles */
+body {
+    font-family: 'Arial', sans-serif;
+    margin: 0;
+    padding: 0;
+    background-color: #081c15;
+    color: #333;
+}
+
+/* Container */
+.container {
+    width: 80%;
+    margin: auto;
+    padding: 20px;
+    background-color: #0f0f0f;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    border-radius: 10px;
+    color: #95d5b2;
+}
+
+/* Form Styling */
+form {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+    margin-top: 20px;
+}
+
+label {
+    font-weight: bold;
+    color: #95d5b2;
+}
+
+input[type="text"], select, input[type="date"] {
+    width: 50%;
+    padding: 12px 20px;
+    border: 2px solid #95d5b2;
+    border-radius: 50px;
+    font-size: 1em;
+    color: #1b4332;
+    background-color: #d8f3dc;
+    outline: none;
+    transition: border 0.3s ease;
+}
+
+input[type="text"]:focus, select:focus, input[type="date"]:focus {
+    border-color: #40916c;
+    box-shadow: 0 0 5px rgba(64, 145, 108, 0.8);
+}
+
+button[type="submit"] {
+    width: 25%; /* Half the length of input fields */
+    padding: 12px 20px;
+    border: none;
+    border-radius: 50px;
+    font-size: 1.1em;
+    font-weight: bold;
+    background-color: #40916c;
+    color: white;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+button[type="submit"]:hover {
+    background-color: #2d6a4f;
+}
+
+/* Table Styling */
+table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 20px;
+    text-align: center;
+}
+
+thead {
+    background-color: #1b4332;
+    color: #d8f3dc;
+}
+
+thead th {
+    padding: 12px;
+    border: 2px solid #b7e4c7;
+    font-size: 1.1em;
+}
+
+tbody td {
+    padding: 12px;
+    border: 2px solid #95d5b2;
+    color: #1b4332;
+    background-color: #d8f3dc;
+}
+
+tbody tr:nth-child(odd) {
+    background-color: #b7e4c7;
+}
+
+/* Chart Styling */
+.chart-container {
+    position: relative;
+    margin: 20px 0;
+}
+
+canvas {
+    max-width: 100%;
+    height: auto;
+}

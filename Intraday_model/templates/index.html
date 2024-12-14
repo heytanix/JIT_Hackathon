@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Stock Prediction App</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body>
+    <div class="container">
+        <h1>Stock Market Prediction</h1>
+        <form action="/predict" method="POST">
+            <label for="ticker">Ticker Symbol:</label>
+            <input type="text" id="ticker" name="ticker" required>
+
+            <label for="exchange">Select Exchange:</label>
+            <select id="exchange" name="exchange" required>
+                <option value="NSE">National Stock Exchange (NSE)</option>
+                <option value="BSE">Bombay Stock Exchange (BSE)</option>
+            </select>
+
+            <label for="start_date">Start Date:</label>
+            <input type="date" id="start_date" name="start_date" required>
+
+            <label for="end_date">End Date:</label>
+            <input type="date" id="end_date" name="end_date" required>
+
+            <button type="submit">Predict</button>
+        </form>
+
+        {% if error %}
+        <div class="error-message">{{ error }}</div>
+        {% endif %}
+
+        {% if predictions %}
+        <h2>Predictions for {{ ticker }}</h2>
+        <h3>Predicted Prices for the Next {{ predictions|length }} Days:</h3>
+        <table>
+            <thead>
+                <tr>
+                    <th>Date</th>
+                    <th>Day</th>
+                    <th>Predicted Price</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for result in predictions %}
+                <tr>
+                    <td>{{ result.date }}</td>
+                    <td>{{ result.day }}</td>
+                    <td>₹{{ result.price | round(2) }}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+
+        <div class="chart-container">
+            <canvas id="priceChart"></canvas>
+        </div>
+
+        <div style="text-align: center; margin-top: 20px;">
+            <button id="checkSentimentButton" style="background-color: white; color: #1b4332; border: 2px solid #1b4332; padding: 10px 20px; border-radius: 50px; cursor: pointer;">
+                Check Sentiments & Risks
+            </button>
+        </div>
+
+        <div id="sentimentOutput" style="text-align: center; margin-top: 20px;"></div>
+
+        <script>
+            const ctxPrice = document.getElementById('priceChart').getContext('2d');
+            const priceLabels = [{% for result in predictions %}'{{ result.date }}'{% if not loop.last %}, {% endif %}{% endfor %}];
+            const priceData = {
+                labels: priceLabels,
+                datasets: [{
+                    label: 'Predicted Prices',
+                    data: [{% for result in predictions %}{{ result.price | round(2) }}{% if not loop.last %}, {% endif %}{% endfor %}],
+                    backgroundColor: 'rgba(75, 192, 192, 0.2)',
+                    borderColor: 'rgba(75, 192, 192, 1)',
+                    borderWidth: 1
+                }]
+            };
+            const priceConfig = {
+                type: 'bar',
+                data: priceData,
+                options: {
+                    scales: {
+                        y: {
+                            beginAtZero: true
+                        }
+                    }
+                }
+            };
+            const priceChart = new Chart(ctxPrice, priceConfig);
+
+            document.getElementById('checkSentimentButton').addEventListener('click', function() {
+                // Fetch sentiment and risk data from the server
+                fetch('/check_sentiment', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({ ticker: document.getElementById('ticker').value })
+                })
+                .then(response => response.json())
+                .then(data => {
+                    // Display the sentiment and risk output
+                    document.getElementById('sentimentOutput').innerText = data.message;
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                });
+            });
+        </script>
+        {% endif %}
+    </div>
+</body>
+</html>
